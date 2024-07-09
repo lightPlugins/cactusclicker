@@ -73,46 +73,6 @@ public class DummyCommand extends SubCommand {
     @Override
     public boolean performAsPlayer(Player player, String[] args) throws ExecutionException, InterruptedException {
 
-        OfflinePlayer target = Bukkit.getPlayer(args[1]);
-
-        if(target == null) {
-            Light.getMessageSender().sendPlayerMessage(LightEco.getMessageParams().playerNotFound(), player);
-            return false;
-        }
-
-        if(!NumberFormatter.isNumber(args[2])) {
-            if(!NumberFormatter.isShortNumber(args[2])) {
-                Light.getMessageSender().sendPlayerMessage(LightEco.getMessageParams().noNumber(), player);
-                return false;
-            }
-        }
-
-        BigDecimal bg = NumberFormatter.parseMoney(args[2]);
-
-        if(bg == null) {
-            Light.getMessageSender().sendPlayerMessage(LightEco.getMessageParams().noNumber(), player);
-            return false;
-        }
-
-        if(!NumberFormatter.isPositiveNumber(bg.doubleValue())) {
-            Light.getMessageSender().sendPlayerMessage(LightEco.getMessageParams().onlyPositive(), player);
-            return false;
-        }
-
-        LightEco.economyVaultyService.depositPlayerAsync(target.getUniqueId(), bg)
-                .thenAcceptAsync(depositResult -> {
-                    if(depositResult.transactionSuccess()) {
-                        Light.getMessageSender().sendPlayerMessage(LightEco.getMessageParams().depositSuccess()
-                                .replace("#player#", target.getName())
-                                .replace("#amount#", NumberFormatter.formatForMessages(bg)), player);
-                        return;
-                    }
-                    Light.getMessageSender().sendPlayerMessage(LightEco.getMessageParams().depositFailed()
-                            .replace("#player#", target.getName())
-                            .replace("#reason#", depositResult.errorMessage())
-                            .replace("#amount#", NumberFormatter.formatForMessages(bg)), player);
-                });
-
         return false;
     }
 

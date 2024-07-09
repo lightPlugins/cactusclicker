@@ -9,11 +9,10 @@ import io.lightplugins.cactusclicker.util.SubCommand;
 import io.lightplugins.cactusclicker.util.interfaces.LightModule;
 import io.lightplugins.cactusclicker.util.manager.CommandManager;
 import io.lightplugins.cactusclicker.util.manager.FileManager;
-import io.lightplugins.vaulty.api.economy.VaultyEconomy;
+import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
 
@@ -23,7 +22,6 @@ public class LightEco implements LightModule {
     public boolean isModuleEnabled = false;
     public Economy economy = null;
     private QueryManager queryManager;
-    public static VaultyEconomy economyVaultyService;
     public static Economy economyVaultService;
 
     public final String moduleName = "eco";
@@ -31,14 +29,13 @@ public class LightEco implements LightModule {
     public final static String tablePrefix = "lighteco_";
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
 
+    @Getter
     private SettingParams settingParams;
+    @Getter
     private static MessageParams messageParams;
-
-    public VaultyEconomy vaultyProvider;
-
-    private net.milkbowl.vault.economy.Economy vaultProvider;
-
+    @Getter
     private FileManager settings;
+    @Getter
     private FileManager language;
 
     @Override
@@ -68,13 +65,6 @@ public class LightEco implements LightModule {
 
 
         registerEvents();
-        RegisteredServiceProvider<VaultyEconomy> vaultyRSP =
-                Bukkit.getServer().getServicesManager().getRegistration(VaultyEconomy.class);
-        RegisteredServiceProvider<Economy> vaultRSP =
-                Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
-
-        economyVaultyService = vaultyRSP.getProvider();
-        economyVaultService = vaultRSP.getProvider();
 
         //getQueryManager().createEcoTable();
 
@@ -106,10 +96,6 @@ public class LightEco implements LightModule {
         return moduleName;
     }
 
-    public FileManager getSettings() { return settings; }
-
-    public FileManager getLanguage() { return language; }
-
     private void selectLanguage() {
         this.language = Light.instance.selectLanguage(settingParams.getModuleLanguage(), moduleName);
     }
@@ -130,14 +116,6 @@ public class LightEco implements LightModule {
 
     public void registerEvents() {
         //Bukkit.getPluginManager().registerEvents(new CreatePlayerOnJoin(), Light.instance);
-    }
-
-    public SettingParams getSettingParams() {
-        return settingParams;
-    }
-
-    public static MessageParams getMessageParams() {
-        return messageParams;
     }
 
     private boolean initDatabase() {
